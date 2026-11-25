@@ -32,6 +32,14 @@ def install_dependencies() -> None:
     logger.info("Dependencies installed.")
 
 
+@task(name="fetch-project")
+def fetch_project() -> None:
+    """Récupère la dernière version du projet depuis le dépôt git distant."""
+    logger = get_run_logger()
+    _run(["git", "pull"])
+    logger.info("Project fetched from the remote repository.")
+
+
 @task(name="format-code")
 def format_code() -> None:
     """Formate le code avec isort et black."""
@@ -152,7 +160,8 @@ def flow_predict() -> None:
 
 @flow(name="all", log_prints=True)
 def flow_all() -> None:
-    """Flow : pipeline complet (code, données, modèle)."""
+    """Flow : pipeline complet (git, code, données, modèle)."""
+    fetch_project()
     install_dependencies()
     format_code()
     check_quality()
